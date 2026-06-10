@@ -3,8 +3,11 @@ package com.varunkumar.payment_ledger.controller;
 import com.varunkumar.payment_ledger.dto.TransferRequest;
 import com.varunkumar.payment_ledger.entity.Wallet;
 import com.varunkumar.payment_ledger.entity.LedgerEntry;
+import com.varunkumar.payment_ledger.exception.InsufficientBalanceException;
+import com.varunkumar.payment_ledger.exception.WalletNotFoundException;
 import com.varunkumar.payment_ledger.repository.WalletRepository;
 import com.varunkumar.payment_ledger.repository.LedgerEntryRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,29 +42,34 @@ public class WalletController {
     // 3. POST method sabse niche
     @PostMapping("/transfer")
     @Transactional
-    public String transferMoney(@RequestBody TransferRequest request) {
+    public String transferMoney(@Valid @RequestBody TransferRequest request) {
+        // 1. Sender & Receiver check
         Wallet fromWallet = walletRepository.findByUserId(request.getFromUserId())
-                .orElseThrow(() -> new RuntimeException("Sender ka wallet nahi mila"));
+                .orElseThrow(() -> new WalletNotFoundException("Sender wallet not found"));
 
         Wallet toWallet = walletRepository.findByUserId(request.getToUserId())
-                .orElseThrow(() -> new RuntimeException("Receiver ka wallet nahi mila"));
+                .orElseThrow(() -> new WalletNotFoundException("Receiver wallet not found"));
 
+        // 2. Balance check
         if (fromWallet.getBalance().compareTo(request.getAmount()) < 0) {
-            throw new RuntimeException("Balance kam hai bhai!");
+            throw new InsufficientBalanceException("Insufficient balance!");
         }
 
+        // 3. Balance Update
         fromWallet.setBalance(fromWallet.getBalance().subtract(request.getAmount()));
         toWallet.setBalance(toWallet.getBalance().add(request.getAmount()));
 
         walletRepository.save(fromWallet);
         walletRepository.save(toWallet);
 
-        LedgerEntry entry = new LedgerEntry();
-        entry.setFromWalletId(fromWallet.getId());
-        entry.setToWalletId(toWallet.getId());
-        entry.setAmount(request.getAmount());
+        // 4. Recording Double-Entry Ledger
+        // Debit entry for sender
+        LedgerEntry debit = new LedgerEntry(fromWallet.getId(), request.getAmount(), "DEBIT");
+        ledgerEntryRepository.save(debit);
 
-        ledgerEntryRepository.save(entry);
+        // Credit entry for receiver
+        LedgerEntry credit = new LedgerEntry(toWallet.getId(), request.getAmount(), "CREDIT");
+        ledgerEntryRepository.save(credit);
 
         return "Transfer successful!";
     }
