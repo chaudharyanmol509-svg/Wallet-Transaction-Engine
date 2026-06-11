@@ -11,16 +11,13 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    // IMPORTANT: Yeh key kam se kam 32 characters ki honi chahiye.
-    // Isse ek simple string ke bajaye Base64 encoded string rakhein.
     private final String SECRET = "af01b2c3d4e5f67890123456789012345678901234567890";
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET); // Agar key Base64 hai
-        return Keys.hmacShaKeyFor(SECRET.getBytes()); // Agar direct string use kar rahe ho
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
-    // Token Generate Karne ke liye
     public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
@@ -30,7 +27,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Token Validate aur Username nikalne ke liye
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())

@@ -5,19 +5,26 @@ import com.varunkumar.payment_ledger.entity.Wallet;
 import com.varunkumar.payment_ledger.entity.LedgerEntry;
 import com.varunkumar.payment_ledger.exception.InsufficientBalanceException;
 import com.varunkumar.payment_ledger.exception.WalletNotFoundException;
+import com.varunkumar.payment_ledger.repository.UserRepository;
 import com.varunkumar.payment_ledger.repository.WalletRepository;
 import com.varunkumar.payment_ledger.repository.LedgerEntryRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/wallets")
 public class WalletController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private WalletRepository walletRepository;
@@ -25,52 +32,77 @@ public class WalletController {
     @Autowired
     private LedgerEntryRepository ledgerEntryRepository;
 
-    // 1. Static path sabse upar
+    @GetMapping("/balance")
+    public ResponseEntity<?> getMyBalance(Authentication authentication) {
+        String username = authentication.getName();
+        return userRepository.findByUsername(username)
+                .flatMap(user -> walletRepository.findByUser_Id(user.getId()))
+                .map(wallet -> ResponseEntity.ok(wallet.getBalance()))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 2. History
     @GetMapping("/history")
     public ResponseEntity<List<LedgerEntry>> getTransactionHistory() {
         return ResponseEntity.ok(ledgerEntryRepository.findAll());
     }
 
-    // 2. Dynamic path iske niche
     @GetMapping("/{userId}")
     public ResponseEntity<Wallet> getWalletByUserId(@PathVariable Long userId) {
-        return walletRepository.findByUserId(userId)
+        return walletRepository.findByUser_Id(userId)  // ← fix
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 3. POST method sabse niche
+    @GetMapping("/ledger-status")
+    public ResponseEntity<?> getLedgerStatus() {
+        List<LedgerEntry> entries = ledgerEntryRepository.findAll();
+
+        double totalCredits = entries.stream()
+                .filter(e -> "CREDIT".equals(e.getType()))
+                .mapToDouble(e -> e.getAmount().doubleValue())
+                .sum();
+
+        double totalDebits = entries.stream()
+                .filter(e -> "DEBIT".equals(e.getType()))
+                .mapToDouble(e -> e.getAmount().doubleValue())
+                .sum();
+
+        Map<String, Object> summary = new java.util.HashMap<>();
+        summary.put("totalCredits", totalCredits);
+        summary.put("totalDebits", totalDebits);
+        summary.put("balanced", Math.abs(totalCredits - totalDebits) < 0.01);
+
+        return ResponseEntity.ok(summary);
+    }
+
+
     @PostMapping("/transfer")
     @Transactional
-    public String transferMoney(@Valid @RequestBody TransferRequest request) {
-        // 1. Sender & Receiver check
-        Wallet fromWallet = walletRepository.findByUserId(request.getFromUserId())
+    public ResponseEntity<String> transferMoney(@Valid @RequestBody TransferRequest request) {
+
+        Wallet fromWallet = walletRepository.findByUser_Id(request.getFromUserId())  // ← fix
                 .orElseThrow(() -> new WalletNotFoundException("Sender wallet not found"));
 
-        Wallet toWallet = walletRepository.findByUserId(request.getToUserId())
+        Wallet toWallet = walletRepository.findByUser_Id(request.getToUserId())  // ← fix
                 .orElseThrow(() -> new WalletNotFoundException("Receiver wallet not found"));
 
-        // 2. Balance check
         if (fromWallet.getBalance().compareTo(request.getAmount()) < 0) {
             throw new InsufficientBalanceException("Insufficient balance!");
         }
 
-        // 3. Balance Update
         fromWallet.setBalance(fromWallet.getBalance().subtract(request.getAmount()));
         toWallet.setBalance(toWallet.getBalance().add(request.getAmount()));
 
         walletRepository.save(fromWallet);
         walletRepository.save(toWallet);
 
-        // 4. Recording Double-Entry Ledger
-        // Debit entry for sender
         LedgerEntry debit = new LedgerEntry(fromWallet.getId(), request.getAmount(), "DEBIT");
         ledgerEntryRepository.save(debit);
 
-        // Credit entry for receiver
         LedgerEntry credit = new LedgerEntry(toWallet.getId(), request.getAmount(), "CREDIT");
         ledgerEntryRepository.save(credit);
 
-        return "Transfer successful!";
+        return ResponseEntity.ok("Transfer successful!");
     }
 }

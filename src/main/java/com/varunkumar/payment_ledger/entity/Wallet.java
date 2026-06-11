@@ -13,6 +13,9 @@ public class Wallet {
     @OneToOne
     private User user;
 
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
+
     private BigDecimal balance;
 
     @Version

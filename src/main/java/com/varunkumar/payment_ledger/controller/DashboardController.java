@@ -10,6 +10,6 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String getDashboardData() {
-        return "Ye tumhara secure ledger data hai!";
+        return "This is your secure ledger data!";
     }
 }

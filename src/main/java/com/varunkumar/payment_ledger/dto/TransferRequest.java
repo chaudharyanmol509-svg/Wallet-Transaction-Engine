@@ -6,14 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class TransferRequest {
-    @NotNull(message = "Sender ID mandatory hai")
+    @NotNull(message = "Sender ID is mandatory !")
     private Long fromUserId;
 
-    @NotNull(message = "Receiver ID mandatory hai")
+    @NotNull(message = "Receiver ID is mandatory !")
     private Long toUserId;
 
-    @NotNull(message = "Amount likhna zaroori hai")
-    @Min(value = 1, message = "Amount kam se kam 1 hona chahiye")
+    @NotNull(message = "Please enter a valid amount")
+    @Min(value = 1, message = "Amount must be at least 1")
     private BigDecimal amount;
 
     // Getters and Setters

@@ -17,8 +17,11 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
-        String token = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
-        return ResponseEntity.ok(Collections.singletonMap("token", token));
+
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {
+        Map<String, Object> result = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
+        return ResponseEntity.ok(result);
     }
 }
+
+

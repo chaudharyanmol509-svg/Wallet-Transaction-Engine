@@ -19,8 +19,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // Login aur Auth request par filter mat chalao
-        return request.getServletPath().contains("/api/auth/");
+        String path = request.getServletPath();
+        System.out.println("Request path: " + path);
+        return path.startsWith("/api/auth/");
     }
 
     @Override
@@ -35,11 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (jwtUtils.validateToken(token)) {
                     String username = jwtUtils.getUsernameFromToken(token);
                     UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(username, null, null);
+                            new UsernamePasswordAuthenticationToken(username, null, java.util.Collections.emptyList()   );
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             } catch (Exception e) {
-                // Token invalid hai
+                logger.error( e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Session");
+                return;
             }
         }
         filterChain.doFilter(request, response);

@@ -16,6 +16,11 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        if (!request.getRequestURI().contains("/transfer")) {
+            return true;
+        }
+
         String idempotencyKey = request.getHeader("Idempotency-Key");
 
         if (idempotencyKey == null || idempotencyKey.isEmpty()) {
@@ -23,13 +28,11 @@ public class IdempotencyInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // Check if key exists in Redis
         if (Boolean.TRUE.equals(redisTemplate.hasKey(idempotencyKey))) {
             response.sendError(HttpServletResponse.SC_CONFLICT, "Request already processed");
             return false;
         }
 
-        // Mark as processing (expiry of 10 mins)
         redisTemplate.opsForValue().set(idempotencyKey, "PROCESSING", Duration.ofMinutes(10));
         return true;
     }
