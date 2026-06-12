@@ -77,6 +77,8 @@ This project is open-source and free to use.
 Built with precision for robust Fintech applications.
 
 ---
+## This project was developed during my internship/training at Infotact Solutions and is a demonstration of my backend skills.
+---
 ### 🛠 Author
 **Varun Kumar**  
 GitHub: [https://github.com/varunCodeZone](https://github.com/varunCodeZone)  
