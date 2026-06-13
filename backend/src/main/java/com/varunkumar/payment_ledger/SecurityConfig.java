@@ -50,9 +50,9 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization",
                 "Content-Type",
-                "Idempotency-Key"   // ← ye add karo
+                "Idempotency-Key"
         ));
-        configuration.setAllowCredentials(true);  // ← ye add karo
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
