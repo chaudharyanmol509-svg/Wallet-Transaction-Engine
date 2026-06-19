@@ -102,7 +102,6 @@ function Dashboard() {
 
   return (
     <div className="dash-root">
-      {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-logo">₹ PayLedger</div>
 
