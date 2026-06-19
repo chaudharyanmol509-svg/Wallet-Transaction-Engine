@@ -15,7 +15,6 @@ function Dashboard() {
   const [ledger, setLedger] = useState(null);
   const [activeTab, setActiveTab] = useState('transfer');
 
-  // Transfer form state
   const [fromUserId] = useState(localStorage.getItem('userId') || '');
   const [toUserId, setToUserId] = useState('');
   const [amount, setAmount] = useState('');
@@ -117,7 +116,7 @@ function Dashboard() {
           <button className="refresh-btn" onClick={fetchBalance}>↻ Refresh</button>
         </div>
 
-        {/* Logged in user info */}
+        
         <div className="user-info">
           <p className="user-label">Logged in as</p>
           <p className="user-name">{localStorage.getItem('username') || 'User'}</p>
@@ -148,14 +147,13 @@ function Dashboard() {
         <button className="logout-btn" onClick={handleLogout}>Logout →</button>
       </aside>
 
-      {/* Main Content */}
+      
       <main className="dash-main">
 
-        {/* TRANSFER TAB */}
         {activeTab === 'transfer' && (
           <section className="panel">
             <h2 className="panel-title">Send Money</h2>
-            <p className="panel-sub">Funds ek wallet se doosre wallet mein transfer karo securely.</p>
+            <p className="panel-sub">Transfer funds from one wallet to another securely.</p>
 
             {transferMsg.text && (
               <div className={`alert ${transferMsg.type === 'error' ? 'alert-error' : 'alert-success'}`}>
@@ -163,7 +161,6 @@ function Dashboard() {
               </div>
             )}
 
-            {/* Sender ID - auto filled, read only */}
             <div className="form-group">
               <label>Your User ID (Sender)</label>
               <input
@@ -174,7 +171,6 @@ function Dashboard() {
               />
             </div>
 
-            {/* Receiver ID */}
             <div className="form-group">
               <label>Receiver User ID</label>
               <input
@@ -185,7 +181,6 @@ function Dashboard() {
               />
             </div>
 
-            {/* Amount */}
             <div className="form-group">
               <label>Amount (₹)</label>
               <input
@@ -198,7 +193,7 @@ function Dashboard() {
             </div>
 
             <div className="idempotency-note">
-              🔐 Idempotency key automatically generate hoga — duplicate request se protected hai.
+              🔐 Idempotency key will be automatically generated — protected from duplicate requests.
             </div>
 
             <button
@@ -211,11 +206,10 @@ function Dashboard() {
           </section>
         )}
 
-        {/* HISTORY TAB */}
         {activeTab === 'history' && (
           <section className="panel">
             <h2 className="panel-title">Transaction History</h2>
-            <p className="panel-sub">Tumhari sabhi transactions ka immutable record.</p>
+            <p className="panel-sub">A reversible record of all your transactions.</p>
 
             {history.length === 0 ? (
               <div className="empty-state">
@@ -257,7 +251,6 @@ function Dashboard() {
           </section>
         )}
 
-        {/* LEDGER AUDIT TAB */}
         {activeTab === 'ledger' && (
           <section className="panel">
             <h2 className="panel-title">Ledger Audit</h2>
