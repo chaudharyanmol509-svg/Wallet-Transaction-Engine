@@ -4,7 +4,6 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
-// Protected Route - login ke bina dashboard nahi milega
 const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useAuth();
   return isLoggedIn ? children : <Navigate to="/" replace />;
@@ -24,7 +23,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* Unknown routes login pe bhejo */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
