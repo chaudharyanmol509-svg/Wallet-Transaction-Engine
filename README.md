@@ -66,11 +66,6 @@ Feel free to fork this repository and suggest improvements, such as adding trans
 
 ---
 
-## 📜 License
-
-This project is open-source and free to use.
-
----
 
 # Wallet Transaction System
 Built with precision for robust Fintech applications.
