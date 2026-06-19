@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 function Login() {
-  const [mode, setMode] = useState('login'); // 'login' | 'signup'
+  const [mode, setMode] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,14 +47,12 @@ function Login() {
   return (
     <div className="auth-root">
       <div className="auth-card">
-        {/* Header */}
         <div className="auth-header">
           <div className="auth-logo">₹</div>
           <h1 className="auth-title">PayLedger</h1>
           <p className="auth-subtitle">Secure · Fast · Auditable</p>
         </div>
 
-        {/* Tab Toggle */}
         <div className="auth-tabs">
           <button
             className={`auth-tab ${mode === 'login' ? 'active' : ''}`}
@@ -70,11 +68,9 @@ function Login() {
           </button>
         </div>
 
-        {/* Alerts */}
         {error && <div className="alert alert-error">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
 
-        {/* Form */}
         <div className="auth-form">
           <div className="form-group">
             <label>Username</label>
