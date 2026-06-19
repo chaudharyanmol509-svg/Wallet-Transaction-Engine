@@ -57,7 +57,6 @@ A highly secure, concurrent digital wallet system built to handle high-frequency
 
 ![JMeter Report](docs/summary-report.png)
 ![JMeter Report](docs/result-tree.png)
-*(Pro-tip: Include a screenshot of your JMeter report here to impress recruiters!)*
 
 ---
 
