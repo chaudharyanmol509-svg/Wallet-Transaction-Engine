@@ -2,7 +2,6 @@ import api from './axiosConfig';
 import { v4 as uuidv4 } from 'uuid';
 
 export const getWalletBalance = async () => {
-  // balance endpoint nahi hai, userId se wallet lenge
   const username = localStorage.getItem('username');
   const response = await api.get('/api/wallets/balance');
   return response.data;
