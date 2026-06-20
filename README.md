@@ -28,9 +28,9 @@ A highly secure, concurrent digital wallet system built to handle high-frequency
 
 ## 🧪 Testing Methodology
 
-1. **Concurrency Testing (JMeter):** Simulated 100 concurrent requests; achieved zero data corruption and total balance integrity[cite: 1].
+1. **Concurrency Testing (JMeter):** Simulated 100 concurrent requests; achieved zero data corruption and total balance integrity.
 2. **API Validation (Postman):** Verified REST endpoints, Register, Login, and Transfer flows.
-3. **Unit & Integration Testing (JUnit & Mockito):** Isolated `TransferService` logic to validate balance constraints[cite: 1].
+3. **Unit & Integration Testing (JUnit & Mockito):** Isolated `TransferService` logic to validate balance constraints.
 
 ---
 
