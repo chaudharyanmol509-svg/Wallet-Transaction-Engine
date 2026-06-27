@@ -74,6 +74,6 @@ Built with precision for robust Fintech applications.
 ## This project was developed during my internship/training at Infotact Solutions and is a demonstration of my backend skills.
 ---
 ### 🛠 Author
-**Varun Kumar**  
+**Anmol Jagvir Singh**  
 GitHub: [https://github.com/chaudharyanmol509-svg](https://github.com/chaudharyanmol509-svg)  
 LinkedIn: [www.linkedin.com/in/anmol-jagvir-singh-35901230b](www.linkedin.com/in/anmol-jagvir-singh-35901230b)
