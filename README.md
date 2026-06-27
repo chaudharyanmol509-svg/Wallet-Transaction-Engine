@@ -75,5 +75,5 @@ Built with precision for robust Fintech applications.
 ---
 ### 🛠 Author
 **Varun Kumar**  
-GitHub: [https://github.com/varunCodeZone](https://github.com/varunCodeZone)  
-LinkedIn: [www.linkedin.com/in/varun-kumar-86b10437a](www.linkedin.com/in/varun-kumar-86b10437a)
+GitHub: [https://github.com/chaudharyanmol509-svg](https://github.com/chaudharyanmol509-svg)  
+LinkedIn: [www.linkedin.com/in/anmol-jagvir-singh-35901230b](www.linkedin.com/in/anmol-jagvir-singh-35901230b)
